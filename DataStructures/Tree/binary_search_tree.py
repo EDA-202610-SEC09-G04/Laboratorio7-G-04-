@@ -44,3 +44,12 @@ def size_tree(root):
     if root is None:
         return 0
     return 1 + size_tree(root["left"]) + size_tree(root["right"])
+
+def new_map():
+    """
+    Crea un árbol binario de búsqueda vacío.
+    """
+    bst = {
+        "root": None
+    }
+    return bst
