@@ -45,11 +45,18 @@ def size_tree(root):
         return 0
     return 1 + size_tree(root["left"]) + size_tree(root["right"])
 
+def default_compare(key1, key2):
+    if key1 < key2:
+        return -1
+    elif key1 > key2:
+        return 1
+    else:
+        return 0
+
+
 def new_map():
-    """
-    Crea un árbol binario de búsqueda vacío.
-    """
     bst = {
-        "root": None
+        "root": None,
+        "cmp_function": default_compare
     }
     return bst
