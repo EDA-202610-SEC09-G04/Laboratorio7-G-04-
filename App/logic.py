@@ -167,7 +167,7 @@ def index_height(analyzer):
     """
     Altura del arbol
     """
-    return bst.height(analyzer['dateIndex'])
+    return bst.height(analyzer['dateIndex'])-1
 
 
 def index_size(analyzer):
