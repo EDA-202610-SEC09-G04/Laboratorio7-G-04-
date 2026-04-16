@@ -36,66 +36,33 @@ from DataStructures.Map import map_separate_chaining as sp
 # TODO Realice la importación de ArrayList (al) como estructura de datos auxiliar para sus requerimientos
 # TODO Realice la importación de LinearProbing (lp) como estructura de datos auxiliar para sus requerimientos
 
-
 data_dir = os.path.dirname(os.path.realpath('__file__')) + '/Data/'
 
-
-
 def new_logic():
-    """ Inicializa el analizador
-
-    Crea una lista vacia para guardar todos los crimenes
-    Se crean indices (Maps) por los siguientes criterios:
-    -Fechas
-
-    Retorna el analizador inicializado.
-    """
     analyzer = {'crimes': None,
                 'dateIndex': None
                 }
-
     analyzer['crimes'] = al.new_list()
     analyzer['dateIndex'] = bst.new_map()
-    
-    
     return analyzer
 
 # Funciones para realizar la carga
 
 def load_data(analyzer, crimesfile):
-    """
-    Carga los datos de los archivos CSV en el modelo
-    """
     crimesfile = data_dir + crimesfile
-    input_file = csv.DictReader(open(crimesfile, encoding="utf-8"),
-                                delimiter=",")
+    input_file = csv.DictReader(open(crimesfile, encoding="utf-8"), delimiter=",")
     for crime in input_file:
         add_crime(analyzer, crime)
     return analyzer
 
-
-
 # Funciones para agregar informacion al analizador
 
-
 def add_crime(analyzer, crime):
-    """
-    funcion que agrega un crimen al catalogo
-    """
     al.add_last(analyzer['crimes'], crime)
     update_date_index(analyzer['dateIndex'], crime)
     return analyzer
 
-
 def update_date_index(map, crime):
-    """
-    Se toma la fecha del crimen y se busca si ya existe en el arbol
-    dicha fecha.  Si es asi, se adiciona a su lista de crimenes
-    y se actualiza el indice de tipos de crimenes.
-
-    Si no se encuentra creado un nodo para esa fecha en el arbol
-    se crea y se actualiza el indice de tipos de crimenes
-    """
     occurreddate = crime['OCCURRED_ON_DATE']
     crimedate = datetime.datetime.strptime(occurreddate, '%Y-%m-%d %H:%M:%S')
     entry = bst.get(map, crimedate.date())
@@ -107,26 +74,18 @@ def update_date_index(map, crime):
     add_date_index(datentry, crime)
     return map
 
-
-
 def add_date_index(datentry, crime):
-    """
-    Actualiza un indice de tipo de crimenes.  Este indice tiene una lista
-    de crimenes y una tabla de hash cuya llave es el tipo de crimen y
-    el valor es una lista con los crimenes de dicho tipo en la fecha que
-    se está consultando (dada por el nodo del arbol)
-    """
     lst = datentry['lstcrimes']
     al.add_last(lst, crime)
     offenseIndex = datentry['offenseIndex']
     offentry = lp.get(offenseIndex, crime['OFFENSE_CODE_GROUP'])
-    if (offentry is None):
+    if offentry is None:
         new_entry = new_offense_entry(crime['OFFENSE_CODE_GROUP'], crime)
         al.add_last(new_entry['lstoffenses'], crime)
+        lp.put(offenseIndex, crime['OFFENSE_CODE_GROUP'], new_entry)
     else:
         al.add_last(offentry['lstoffenses'], crime)
     return datentry
-
 
 def new_data_entry(crime):
     """
@@ -139,7 +98,6 @@ def new_data_entry(crime):
     entry['lstcrimes'] = al.new_list()
     return entry
 
-
 def new_offense_entry(offensegrp, crime):
     """
     Crea una entrada en el indice por tipo de crimen, es decir en
@@ -150,11 +108,19 @@ def new_offense_entry(offensegrp, crime):
     ofentry['lstoffenses'] = al.new_list()
     return ofentry
 
+def get_crimes_by_range_code(analyzer, initialDate, offensecode):
+    initialDate = datetime.datetime.strptime(initialDate, "%Y-%m-%d").date()
+    entry = bst.get(analyzer['dateIndex'], initialDate)
+    if entry is None:
+        return 0
+    offentry = lp.get(entry['offenseIndex'], offensecode)
+    if offentry is None:
+        return 0
+    return al.size(offentry['lstoffenses'])
 
 # ==============================
 # Funciones de consulta
 # ==============================
-
 
 def crimes_size(analyzer):
     """
@@ -162,13 +128,11 @@ def crimes_size(analyzer):
     """
     return al.size(analyzer['crimes'])
 
-
 def index_height(analyzer):
     """
     Altura del arbol
     """
     return bst.height(analyzer['dateIndex'])-1
-
 
 def index_size(analyzer):
     """
@@ -176,20 +140,17 @@ def index_size(analyzer):
     """
     return bst.size(analyzer['dateIndex'])
 
-
 def min_key(analyzer):
     """
     Llave mas pequena
     """
     return bst.get_min(analyzer['dateIndex'])
 
-
 def max_key(analyzer):
     """
     Llave mas grande
     """
     return bst.get_max(analyzer['dateIndex'])
-
 
 def get_crimes_by_range(analyzer, initialDate, finalDate):
     """
@@ -206,5 +167,3 @@ def get_crimes_by_range(analyzer, initialDate, finalDate):
         total += al.size(entry['lstcrimes'])
         node = node["next"]
     return total
-
-
