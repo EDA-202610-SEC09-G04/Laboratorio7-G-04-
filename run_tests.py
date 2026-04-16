@@ -1,9 +1,7 @@
 import os
 
-
 def execute_pytest_test(test_name):
-    os.system(f"pytest -v -k \"{test_name}\"")
-
+    os.system(f"python -m pytest -v -k \"{test_name}\"")
 
 def print_test_options():
     print(" Bienvenido a las pruebas de EDA ".center(80, "="))
@@ -24,7 +22,6 @@ def print_test_options():
 
 
 def execute_all_tests():
-    """Ejecuta todas las pruebas disponibles"""
     execute_list_tests()
     execute_queue_tests()
     execute_stack_tests()
@@ -34,7 +31,6 @@ def execute_all_tests():
 
 
 def execute_list_tests(input_option="2"):
-    """Ejecuta pruebas relacionadas con listas"""
     tests_names = []
     if input_option.lower() == "2.a" or input_option == "2":
         tests_names.append("test_array_list")
@@ -45,14 +41,13 @@ def execute_list_tests(input_option="2"):
 
 
 def execute_queue_tests():
-    """Ejecuta las pruebas de la cola (queue)"""
     execute_pytest_test("test_queue")
 
 
 def execute_stack_tests():
-    """Ejecuta las pruebas de la pila (stack)"""
     execute_pytest_test("test_stack")
     
+
 def execute_sorting_tests(input_option="5"):
     tests_names = []
     if input_option.lower() == "5.a" or input_option == "5":
@@ -64,8 +59,8 @@ def execute_sorting_tests(input_option="5"):
     for test_name in tests_names:
         execute_pytest_test(test_name)
 
+
 def execute_map_tests(input_option="6"):
-    """Ejecuta pruebas relacionadas con mapas"""
     tests_names = []
     if input_option.lower() == "6.a" or input_option == "6":
         tests_names.append("test_map_linear_probing")
@@ -74,13 +69,12 @@ def execute_map_tests(input_option="6"):
     for test_name in tests_names:
         execute_pytest_test(test_name)
 
+
 def execute_bst_tests():
-    """Ejecuta las pruebas de BST"""
     execute_pytest_test("test_binary_search_tree")
 
 
 if __name__ == "__main__":
-    """Menú principal de pruebas"""
     runned = False
     print_test_options()
     input_option = str(input("Ingrese el número de la opción que desea ejecutar: \n"))
@@ -102,11 +96,11 @@ if __name__ == "__main__":
         runned = True
         
     if input_option.startswith("5"):
-        execute_sorting_tests()
+        execute_sorting_tests(input_option)
         runned = True
         
     if input_option.startswith("6"):
-        execute_map_tests()
+        execute_map_tests(input_option)
         runned = True
     
     if input_option.startswith("7"):
