@@ -24,7 +24,6 @@ def insert_node(root, key, value, cmp_function):
 def get(my_bst, key):
     return get_node(my_bst["root"], key, my_bst["cmp_function"])
 
-
 def get_node(root, key, cmp_function):
     if root is None:
         return None
@@ -52,7 +51,6 @@ def default_compare(key1, key2):
         return 1
     else:
         return 0
-
 
 def new_map():
     bst = {
